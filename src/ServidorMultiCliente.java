@@ -12,29 +12,37 @@ public class ServidorMultiCliente {
 
 	 static ServerSocket sk;
 	 
-	 
-	 
-	 
-	 static class ServerThread implements Runnable {
+	  static class ServerThread implements Runnable {
 		    Socket client = null;
+		    
 		    public ServerThread(Socket c) {
 		        this.client = c;
 		    }
 		    public void run() {
+		    	String NombreCliente;
+		    	boolean BoolCliente=true;
 		        try {
-		            System.out.println("Connected to client : "+client.getInetAddress().getHostName());
+		        	NombreCliente=client.getInetAddress().getHostName();
+		            System.out.println("Connected to client : "+NombreCliente);
 		            
 		            do{
-		                 BufferedReader entrada = new BufferedReader(new InputStreamReader(client.getInputStream()));
-		                 PrintWriter salida = new PrintWriter(new OutputStreamWriter(client.getOutputStream()),true);
+		            	BufferedReader entrada = new BufferedReader(new InputStreamReader(client.getInputStream()));
+		            	PrintWriter salida= new PrintWriter(new OutputStreamWriter(client.getOutputStream()),true);
 		                
 		                 String datos = entrada.readLine();
-		                  System.out.println("Movil: "+client.getInetAddress().getHostName()+" : "+datos);
-		                  salida.print(datos);
-		                  
-		                 }while(true);
+		                 if (datos.equals(null)){
+		                	 BoolCliente=false;
+		                	 System.out.println("dato nulo");
+		  		              
+		                 }else{
+		                  System.out.println("Dispositivo '"+ NombreCliente+"' : "+datos);
+		                  salida.println("Servidor -> "+NombreCliente+" : "+datos);
+		                 }
+		                 
+		                 }while(BoolCliente);
 		        } catch (Exception e) {
 		            System.err.println(e.getMessage());
+		            BoolCliente=false;
 		        }
 		    }
 		    }
