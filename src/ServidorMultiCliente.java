@@ -11,35 +11,46 @@ import java.net.Socket;
 public class ServidorMultiCliente {
 
 	 static ServerSocket sk;
-	 
-	  static class ServerThread implements Runnable {
+	 static final int Puerto=9001;
+		
+	  static class HiloServidor implements Runnable {
 		    Socket client = null;
 		    
-		    public ServerThread(Socket c) {
+		    // constructor y parametro
+		    public HiloServidor(Socket c) {
 		        this.client = c;
 		    }
+		    
 		    public void run() {
+		    	
 		    	String NombreCliente;
 		    	boolean BoolCliente=true;
+		    	
 		        try {
+		        	
 		        	NombreCliente=client.getInetAddress().getHostName();
 		            System.out.println("Connected to client : "+NombreCliente);
 		            
 		            do{
+		            	//lee o que envia el cliente
 		            	BufferedReader entrada = new BufferedReader(new InputStreamReader(client.getInputStream()));
+		            	// escribe la salida del servidor
 		            	PrintWriter salida= new PrintWriter(new OutputStreamWriter(client.getOutputStream()),true);
 		                
-		                 String datos = entrada.readLine();
-		                 if (datos.equals(null)){
-		                	 BoolCliente=false;
+		            	//formatea el dato de entrada o caste a aString
+		                String datos = entrada.readLine();
+		                System.out.println("datos: "+datos);
+			         
+		                if (datos==null){
 		                	 System.out.println("dato nulo");
-		  		              
+		                	 BoolCliente=false;
+		                     
 		                 }else{
 		                  System.out.println("Dispositivo '"+ NombreCliente+"' : "+datos);
 		                  salida.println("Servidor -> "+NombreCliente+" : "+datos);
 		                 }
 		                 
-		                 }while(BoolCliente);
+		                 }while(BoolCliente);//cuando el clientees
 		        } catch (Exception e) {
 		            System.err.println(e.getMessage());
 		            BoolCliente=false;
@@ -53,7 +64,6 @@ public class ServidorMultiCliente {
 			 
 		 
 		 Boolean Serv=true;
-		int Puerto=9001;
 		   try {
 		          sk = new ServerSocket(Puerto);
 		          System.out.println();  
@@ -65,8 +75,9 @@ public class ServidorMultiCliente {
 	                 System.out.println();
 		          while (Serv) { 
 		        	  
-		                 Socket cliente = sk.accept();
-		                 new Thread(new ServerThread(cliente)).start();
+		                 Socket cliente = sk.accept();// se queda a la espera de un cliente
+		                 new Thread(new HiloServidor(cliente)).start();// crea un hilo con un nuevo cliente.
+		                 //y le paso como parametro el Socket cliente ingresado.
 		              
 		          }
 		   } catch (IOException e) {
