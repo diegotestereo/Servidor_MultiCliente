@@ -11,7 +11,7 @@ import java.net.Socket;
 public class ServidorMultiCliente {
 
 	 static ServerSocket sk;
-	 static final int Puerto=9001;
+	 static final int Puerto=10002;
 		
 	  static class HiloServidor implements Runnable {
 		    Socket client = null;
@@ -39,10 +39,10 @@ public class ServidorMultiCliente {
 		                
 		            	//formatea el dato de entrada o caste a aString
 		                String datos = entrada.readLine();
-		                System.out.println("datos: "+datos);
+		                
 			         
 		                if (datos==null){
-		                	 System.out.println("dato nulo");
+		                	
 		                	 BoolCliente=false;
 		                     
 		                 }else{
